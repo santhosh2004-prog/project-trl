@@ -1,0 +1,180 @@
+<mvc:View
+    controllerName="project1.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+    <Page
+        showHeader="true"
+        class="sapUiContentPadding sitePageBackground">
+
+        <!-- HEADER -->
+        <customHeader>
+            <Bar class="headerBarFix">
+                <contentLeft>
+                    <!-- <Image src="/images/logo.png" height="40px" class="siteLogo"/> -->
+                </contentLeft>
+                <contentMiddle>
+                    <HBox class="headerCenterBox">
+                        <Text text="SITE MANAGEMENT" class="siteHeaderTitle"/>
+                    </HBox>
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+
+        <!-- MAIN GRID -->
+        <layout:Grid defaultSpan="L12 M12 S12" hSpacing="2" vSpacing="1" width="100%">
+
+            <!-- LEFT COLUMN -->
+            <layout:content>
+
+                <!-- GENERAL INFORMATION -->
+                <Panel headerText="General Information" class="whiteCard">
+
+                    <layout:Grid defaultSpan="L4 M6 S12" hSpacing="1" vSpacing="1">
+
+                        <VBox class="exampleDiv">
+                            <Label text="Customer Name"/>
+                            <ComboBox id="customer"/>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="Location"/>
+                            <ComboBox id="location"/>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="Runner ID"/>
+                            <Input maxLength="10"/>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="Campaign No."/>
+                            <Input id="campaign" editable="false"/>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="Repair Status"/>
+                            <ComboBox id="repairStatus" selectionChange="onRepairStatusChange">
+                                <items>
+                                    <core:Item key="major" text="Major"/>
+                                    <core:Item key="minor" text="Minor"/>
+                                </items>
+                            </ComboBox>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="Minor Repair Status"/>
+                            <Input type="Number"/>
+                        </VBox>
+
+                        <VBox class="exampleDiv">
+                            <Label text="No of House / Production Line"/>
+                            <Input type="Number"/>
+                        </VBox>
+
+                    </layout:Grid>
+                </Panel>
+
+                <!-- LINE 1 -->
+                <Panel headerText="House / Production Line - 1"
+                       expandable="true"
+                       expanded="true"
+                       class="whiteCard">
+
+                    <layout:VerticalLayout width="100%">
+                        <layout:Grid containerQuery="true">
+
+                            <VBox class="exampleDiv">
+                                <Label text="Line Name"/>
+                                <Input/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="No of SPG Sensors"/>
+                                <Input type="Number" change="onSpgCountChange_Line1"/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="SPG Sensors"/>
+                                <HBox id="spgBoxLine1"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </layout:VerticalLayout>
+                </Panel>
+
+            </layout:content>
+
+            <!-- RIGHT COLUMN -->
+            <layout:content>
+
+                <!-- LINE 2 -->
+                <Panel headerText="House / Production Line - 2"
+                       expandable="true"
+                       expanded="false"
+                       class="whiteCard">
+
+                    <layout:VerticalLayout width="100%">
+                        <layout:Grid containerQuery="true">
+
+                            <VBox class="exampleDiv">
+                                <Label text="Line Name"/>
+                                <Input/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="No of SPG Sensors"/>
+                                <Input type="Number" liveChange="onSpgCountChange_Line2"/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="SPG Sensors"/>
+                                <HBox id="spgBoxLine2"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </layout:VerticalLayout>
+                </Panel>
+
+                <!-- LINE 3 -->
+                <Panel headerText="House / Production Line - 3"
+                       expandable="true"
+                       expanded="false"
+                       class="whiteCard">
+
+                    <layout:VerticalLayout width="100%">
+                        <layout:Grid containerQuery="true">
+
+                            <VBox class="exampleDiv">
+                                <Label text="Line Name"/>
+                                <Input/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="No of SPG Sensors"/>
+                                <Input type="Number" change="onSpgCountChange_Line3"/>
+                            </VBox>
+
+                            <VBox class="exampleDiv">
+                                <Label text="SPG Sensors"/>
+                                <HBox id="spgBoxLine3"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </layout:VerticalLayout>
+                </Panel>
+
+            </layout:content>
+
+        </layout:Grid>
+
+        <!-- FOOTER -->
+        <HBox justifyContent="End" class="actionBar">
+            <Button text="Save" type="Emphasized" press="onSave"/>
+        </HBox>
+
+    </Page>
+</mvc:View>
