@@ -14,7 +14,7 @@
         <customHeader>
             <Bar class="headerBarFix">
                 <contentLeft>
-                    <!-- <Image src="/images/logo.png" height="40px" class="siteLogo"/> -->
+                    <Image src="/images/logo.png" height="40px" class="siteLogo"/>
                 </contentLeft>
                 <contentMiddle>
                     <HBox class="headerCenterBox">
