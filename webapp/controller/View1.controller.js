@@ -10,45 +10,29 @@ sap.ui.define([
 
     onInit: function () {
       this._initModel();
-      this._initCampaignNumber();
+      this._initCampaignNo();
       this._loadDropdowns();
     },
 
-
-    //  Set default JSON Model
     _initModel: function () {
-
       const data = {
         customer: "",
         location: "",
         runnerId: "",
         campaignNo: "",
         repairStatus: "",
-        minorRepairStatus: "",
-        productionLineCount: 0,
-        line1: {
-          spgCount: 0,
-          spgSensors: []
-        }
+        lineCount: 0,
+        lines: []
       };
-
-      const oModel = new JSONModel(data);
-      this.getView().setModel(oModel);
+      this.getView().setModel(new JSONModel(data));
     },
 
-
-    //  Auto Generate Campaign Number
-    _initCampaignNumber: function () {
-
-      const ts = Date.now();
-      const campaign = "CMP-" + ts;
-
-      this.getView().getModel().setProperty("/campaignNo", campaign);
-      this.getView().byId("campaign").setValue(campaign);
+    _initCampaignNo: function () {
+      const no = "CMP-" + Date.now();
+      this.byId("campaign").setValue(no);
+      this.getView().getModel().setProperty("/campaignNo", no);
     },
 
-
-    //  Dropdown Values
     _loadDropdowns: function () {
 
       const customerModel = new JSONModel({
@@ -67,116 +51,229 @@ sap.ui.define([
         ]
       });
 
-      this.getView().byId("customer").setModel(customerModel);
-      this.getView().byId("customer").bindItems("/items",
-        new sap.ui.core.ListItem({ key: "{key}", text: "{text}" })
-      );
+      this.byId("customer").setModel(customerModel)
+        .bindItems("/items", new sap.ui.core.ListItem({ key: "{key}", text: "{text}" }));
 
-      this.getView().byId("location").setModel(locationModel);
-      this.getView().byId("location").bindItems("/items",
-        new sap.ui.core.ListItem({ key: "{key}", text: "{text}" })
-      );
+      this.byId("location").setModel(locationModel)
+        .bindItems("/items", new sap.ui.core.ListItem({ key: "{key}", text: "{text}" }));
     },
 
+    // =================================================
+    // CREATE PANELS
+    // =================================================
+    onLineCountChange: function (oEvent) {
 
-    //  DYNAMIC SPG FIELD GENERATION
-    onSpgCountChange_Line1: function (oEvent) {
-
-      let count = parseInt(oEvent.getSource().getValue(), 10);
-      const spgBox = this.byId("spgBoxLine1");
+      let count = parseInt(oEvent.getParameter("value"), 10);
+      const container = this.byId("linesContainer");
       const model = this.getView().getModel();
 
-      spgBox.removeAllItems();
+      container.destroyItems();
 
       if (isNaN(count) || count <= 0) {
+        model.setProperty("/lines", []);
         return;
       }
 
-      if (count > 3) {
-        MessageBox.warning("Maximum 3 SPG Sensors allowed.");
-        count = 3;
-        oEvent.getSource().setValue(3);
-      }
-
-      const sensors = [];
+      const aLines = [];
 
       for (let i = 0; i < count; i++) {
 
-        const id = "spg_" + i;
+        const index = i + 1;
 
+        const panel = new sap.m.Panel({
+          headerText: "House / Production Line - " + index,
+          expandable: true,
+          expanded: true
+        }).addStyleClass("whiteCard");
+
+        // ================= LINE NAME =================
+       const lineName = new sap.m.Input({
+  placeholder: "Line Name (max 10)",
+  maxLength: 10,
+  width: "50%",
+  liveChange: function (oEvent) {
+
+    let value = oEvent.getSource().getValue();
+
+    // ✅ Remove everything except letters and spaces
+    value = value.replace(/[^a-zA-Z\s]/g, "");
+
+    oEvent.getSource().setValue(value);
+    aLines[i].name = value;
+  }
+});
+
+
+        // ================= SPG =================
+        const spgCount = new sap.m.Input({
+          type: "Number",
+          width: "120px",
+          placeholder: "No of SPG",
+          change: this._handleSpgChange.bind(this, i)
+        });
+
+        const spgBox = new sap.m.HBox({ wrap: "Wrap" });
+
+        // ================= MUDGUN =================
+        const mudgunCount = new sap.m.Input({
+          type: "Number",
+          width: "120px",
+          placeholder: "No of Mudgun",
+          change: this._handleMudgunChange.bind(this, i)
+        });
+
+        const mudgunBox = new sap.m.HBox({ wrap: "Wrap" });
+
+        // ================= LAYOUT =================
+
+        const layout = new sap.ui.layout.VerticalLayout({ width: "100%" });
+
+        // Row 1
+        layout.addContent(new sap.m.VBox({
+          items: [
+            new sap.m.Label({ text: "Line Name" }).addStyleClass("boldLabel"),
+            lineName
+          ]
+        }));
+
+        // Row 2 → SPG COUNT + SPG FIELDS IN SAME ROW
+        layout.addContent(new sap.m.HBox({
+          width: "100%",
+          alignItems: "Center",
+          items: [
+            new sap.m.VBox({
+              width: "200px",
+              items: [new sap.m.Label({ text: "No of SPG Sensors" }), spgCount]
+            }),
+            spgBox
+          ]
+        }));
+
+        // Row 3 → MUDGUN COUNT + MUDGUN FIELDS IN SAME ROW
+        layout.addContent(new sap.m.HBox({
+          width: "100%",
+          alignItems: "Center",
+          items: [
+            new sap.m.VBox({
+              width: "200px",
+              items: [new sap.m.Label({ text: "No of Mudgun Sensors" }), mudgunCount]
+            }),
+            mudgunBox
+          ]
+        }));
+
+        panel.addContent(layout);
+        container.addItem(panel);
+
+        aLines.push({
+          name: "",
+          spgCount: 0,
+          spgSensors: [],
+          mudgunCount: 0,
+          mudgunSensors: [],
+          spgBox: spgBox,
+          mudgunBox: mudgunBox
+        });
+      }
+
+      model.setProperty("/lines", aLines);
+    },
+
+    // =================================================
+    // SPG
+    // =================================================
+    _handleSpgChange: function (lineIndex, oEvent) {
+
+      const count = parseInt(oEvent.getParameter("value"), 10);
+      const model = this.getView().getModel();
+      const line = model.getProperty("/lines")[lineIndex];
+      const box = line.spgBox;
+
+      box.destroyItems();
+
+      const sensors = [];
+      for (let i = 0; i < count; i++) {
         const input = new sap.m.Input({
           width: "70px",
           placeholder: "SPG " + (i + 1),
-          liveChange: function (e) {
+          change: e => {
             sensors[i] = e.getSource().getValue();
-            model.setProperty("/line1/spgSensors", sensors);
+            line.spgSensors = sensors;
+            model.refresh();
           }
         });
-
         sensors.push("");
-        spgBox.addItem(input);
+        box.addItem(input);
       }
 
-      model.setProperty("/line1/spgCount", count);
-      model.setProperty("/line1/spgSensors", sensors);
+      line.spgCount = count;
     },
 
+    // =================================================
+    // MUDGUN
+    // =================================================
+    _handleMudgunChange: function (lineIndex, oEvent) {
 
-    //  SAVE BUTTON
+      const count = parseInt(oEvent.getParameter("value"), 10);
+      const model = this.getView().getModel();
+      const line = model.getProperty("/lines")[lineIndex];
+      const box = line.mudgunBox;
+
+      box.destroyItems();
+
+      const sensors = [];
+      for (let i = 0; i < count; i++) {
+        const input = new sap.m.Input({
+          width: "70px",
+          placeholder: "MG " + (i + 1),
+          change: e => {
+            sensors[i] = e.getSource().getValue();
+            line.mudgunSensors = sensors;
+            model.refresh();
+          }
+        });
+        sensors.push("");
+        box.addItem(input);
+      }
+
+      line.mudgunCount = count;
+    },
+
+    // =================================================
+    // SAVE
+    // =================================================
     onSave: function () {
-
-      const data = this.getView().getModel().getData();
-
-      if (!data.customer || !data.location || !data.runnerId) {
-        MessageBox.error("Please fill all mandatory fields");
-        return;
-      }
-
-      console.log(" DATA TO SAVE", data);
-
-      MessageToast.show("Data Saved Successfully ");
+      console.log(this.getView().getModel().getData());
+      MessageToast.show("Saved Successfully");
     },
 
-
-    //  RESET BUTTON
+    // =================================================
+    // RESET
+    // =================================================
     onReset: function () {
-
       MessageBox.confirm("Reset all fields?", {
-        onClose: (oAction) => {
-          if (oAction === "OK") {
+        onClose: a => {
+          if (a === "OK") {
             this._initModel();
-            this._initCampaignNumber();
-            this.byId("spgBoxLine1").removeAllItems();
-            MessageToast.show("Form Reset");
+            this._initCampaignNo();
+            this.byId("linesContainer").destroyItems();
+            MessageToast.show("Reset Completed");
           }
         }
       });
+    },
+
+    // =================================================
+    // REPAIR STATUS
+    // =================================================
+    onRepairStatusChange: function (oEvent) {
+      if (oEvent.getSource().getSelectedKey() === "major") {
+        const no = "CMP-" + Math.floor(Math.random() * 1000000);
+        this.byId("campaign").setValue(no);
+        this.getView().getModel().setProperty("/campaignNo", no);
+        MessageToast.show("Campaign Re-generated");
+      }
     }
-,
-onSpgCountChange_Line2: function (oEvent) {
-    this._handleSpgChange(oEvent, "spgBoxLine2", "/line2");
-},
-
-onSpgCountChange_Line3: function (oEvent) {
-    this._handleSpgChange(oEvent, "spgBoxLine3", "/line3");
-},
-onRepairStatusChange: function (oEvent) {
-
-    const selectedKey = oEvent.getSource().getSelectedKey();
-
-    if (selectedKey === "major") {
-
-        // Generate new Campaign No
-        const randomCampaign = "CMP-" + Math.floor(Math.random() * 1000000);
-
-        this.getView().byId("campaign").setValue(randomCampaign);
-        this.getView().getModel().setProperty("/campaignNo", randomCampaign);
-
-        sap.m.MessageToast.show("New Campaign No generated for Major Repair ");
-    }
-}
-
-
 
   });
 });
