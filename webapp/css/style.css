@@ -18,6 +18,8 @@
     letter-spacing: 1px;
     color: #070707;
     white-space: nowrap;
+    text-align: center;
+    width: 100%;
 }
 .siteLogo {
     height: 40px;

@@ -6,6 +6,12 @@
     xmlns:core="sap.ui.core">
 
     <Page showHeader="true" class="sapUiContentPadding sitePageBackground">
+    <HBox justifyContent="Start" class="sapUiSmallMarginBottom">
+    <VBox width="300px">
+        <Label text="Site"/>
+        <Input id="topName"/>
+    </VBox>
+</HBox>
 
         <!-- HEADER -->
         <customHeader>
@@ -13,9 +19,12 @@
                 <contentLeft>
                     <Image src="/images/logo.png" height="40px" class="siteLogo"/>
                 </contentLeft>
-                <contentMiddle>
-                    <Text text="SITE MANAGEMENT" class="siteHeaderTitle"/>
-                </contentMiddle>
+               
+        <contentMiddle>
+            <HBox width="90%" justifyContent="Center">
+                <Text text="SITE MANAGEMENT" class="siteHeaderTitle"/>
+            </HBox>
+        </contentMiddle>
             </Bar>
         </customHeader>
 
@@ -59,6 +68,10 @@
                 </VBox>
 
             </layout:Grid>
+            <HBox justifyContent="End" class="sapUiSmallMarginTop">
+        <Button text="Create" type="Emphasized" press="onCreateCampaign"/>
+        <Button text="Stop Campaign No" type="Reject" class="sapUiTinyMarginBegin" press="onStopCampaign"/>
+    </HBox>
         </Panel>
 
         <!-- DYNAMIC LINES -->
