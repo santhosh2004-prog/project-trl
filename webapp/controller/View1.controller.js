@@ -96,7 +96,7 @@ sap.ui.define([
     let value = oEvent.getSource().getValue();
 
     // ✅ Remove everything except letters and spaces
-    value = value.replace(/[^a-zA-Z\s]/g, "");
+    // value = value.replace(/[^a-zA-Z\s]/g, "");
 
     oEvent.getSource().setValue(value);
     aLines[i].name = value;

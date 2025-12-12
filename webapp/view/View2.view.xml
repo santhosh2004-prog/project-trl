@@ -1,0 +1,144 @@
+<mvc:View
+    controllerName="project1.controller.View2"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core">
+
+    <Page showHeader="true" class="sapUiContentPadding sitePageBackground">
+
+        <!-- MAIN TITLE -->
+        <HBox justifyContent="Center" class="sapUiLargeMarginBottom">
+            <Text text="TEMPERATURE" class="mainTitle"/>
+        </HBox>
+
+        <!-- DATE / TIME / SHIFT ROW -->
+        <HBox width="100%" justifyContent="End" class="sapUiSmallMarginBottom" wrap="Wrap">
+
+            <VBox class="sapUiTinyMarginEnd">
+                <Label text="DATE"/>
+                <DatePicker 
+                    displayFormat="dd.MM.yyyy" 
+                    valueFormat="yyyy-MM-dd"
+                    width="150px"
+                />
+            </VBox>
+
+            <VBox class="sapUiTinyMarginEnd">
+                <Label text="TIME"/>
+                <HBox id="clockBox" alignItems="Center">
+                    <Text id="liveClock"/>
+                </HBox>
+            </VBox>
+
+            <VBox>
+                <Label text="SHIFT"/>
+                <Input value="A"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- GENERAL INFORMATION PANEL -->
+        <Panel headerText="General Information" class="whiteCard">
+            <layout:Grid defaultSpan="L3 M4 S12" hSpacing="2" vSpacing="1">
+
+                <VBox>
+                    <Label text="Runner ID"/>
+                    <Input placeholder="CHAR10"/>
+                </VBox>
+
+                <VBox>
+                    <Label text="Campaign No"/>
+                    <Input placeholder="CHAR10"/>
+                </VBox>
+
+                <VBox>
+                    <Label text="Repair Status"/>
+                    <ComboBox>
+                        <core:Item key="major" text="Major"/>
+                        <core:Item key="minor" text="Minor"/>
+                    </ComboBox>
+                </VBox>
+
+                <VBox>
+                    <Label text="Minor Repair Status"/>
+                    <Input/>
+                </VBox>
+
+            </layout:Grid>
+        </Panel>
+
+        <!-- COMBINED PANEL (WITH GAP ABOVE) -->
+        <Panel 
+            headerText="House / Production Line &amp; Sensors" 
+            class="whiteCard sapUiLargeMarginTop">
+
+            <VBox class="sapUiMediumMargin">
+
+                <!-- HOUSE FIELD -->
+                <VBox class="sapUiSmallMarginBottom">
+                    <Label text="House / Production Line Name - 1"/>
+                    <Input placeholder="CHAR10 TEXT FIELD"/>
+                </VBox>
+
+                <!-- SENSOR PANELS (RESPONSIVE) -->
+                <layout:Grid 
+                    defaultSpan="L6 M6 S12"
+                    hSpacing="2" 
+                    width="100%"
+                    class="sapUiMediumMarginTop">
+
+                    <!-- SGP SENSOR PANEL -->
+                   <Panel headerText="SGP SENSOR" class="whiteCard" width="100%">
+    <VBox>
+
+        <!-- INPUT: NUMBER OF FIELDS -->
+        <VBox class="sapUiSmallMarginBottom">
+            <Label text="Number of Fields"/>
+            <Input 
+                id="sgpCount" 
+                type="Number"
+                liveChange=".onGenerateSGPFields"
+                placeholder="Enter number"
+            />
+        </VBox>
+
+        <!-- GENERATED FIELDS WILL COME HERE -->
+        <VBox id="sgpContainer"/>
+    </VBox>
+</Panel>
+
+                    <!-- MUDGUN SENSOR PANEL -->
+                  <Panel headerText="MUDGUN SENSOR" class="whiteCard" width="100%">
+    <VBox>
+
+        <!-- INPUT: NUMBER OF FIELDS -->
+        <VBox class="sapUiSmallMarginBottom">
+            <Label text="Number of Fields"/>
+            <Input 
+                id="mudgunCount" 
+                type="Number"
+                liveChange=".onGenerateMudgunFields"
+                placeholder="Enter number"
+            />
+        </VBox>
+
+        <!-- GENERATED FIELDS WILL COME HERE -->
+        <VBox id="mudgunContainer"/>
+    </VBox>
+</Panel>
+
+
+                </layout:Grid>
+
+            </VBox>
+        </Panel>
+
+        <!-- FOOTER -->
+        <HBox justifyContent="End" class="actionBar sapUiMediumMarginTop">
+            <Button text="Save" type="Emphasized"/>
+        </HBox>
+
+    </Page>
+
+</mvc:View>

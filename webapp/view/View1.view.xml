@@ -30,49 +30,56 @@
 
         <!-- GENERAL INFORMATION -->
         <Panel headerText="General Information" class="whiteCard">
-            <layout:Grid defaultSpan="L4 M6 S12">
+    <layout:Grid defaultSpan="L4 M6 S12">
 
-                <VBox>
-                    <Label text="Customer"/>
-                    <ComboBox id="customer"/>
-                </VBox>
+        <VBox>
+            <Label text="Customer"/>
+            <ComboBox id="customer" class="uniformField"/>
+        </VBox>
 
-                <VBox>
-                    <Label text="Location"/>
-                    <ComboBox id="location"/>
-                </VBox>
+        <VBox>
+            <Label text="Location"/>
+            <ComboBox id="location" class="uniformField"/>
+        </VBox>
 
-                <VBox>
-                    <Label text="Runner ID"/>
-                    <Input/>
-                </VBox>
+        <VBox>
+            <Label text="Runner ID"/>
+            <Input class="uniformField"/>
+        </VBox>
 
-                <VBox>
-                    <Label text="Campaign No"/>
-                    <Input id="campaign" editable="false"/>
-                </VBox>
+        <VBox>
+            <Label text="Campaign No"/>
+            <Input id="campaign" editable="false" class="uniformField"/>
+        </VBox>
 
-                <VBox>
-                    <Label text="Repair Status"/>
-                    <ComboBox id="repairStatus" selectionChange="onRepairStatusChange">
-                        <items>
-                            <core:Item key="major" text="Major"/>
-                            <core:Item key="minor" text="Minor"/>
-                        </items>
-                    </ComboBox>
-                </VBox>
+        <VBox>
+            <Label text="Repair Status"/>
+            <ComboBox id="repairStatus" selectionChange="onRepairStatusChange" class="uniformField">
+                <items>
+                    <core:Item key="major" text="Major"/>
+                    <core:Item key="minor" text="Minor"/>
+                </items>
+            </ComboBox>
+        </VBox>
 
-                <VBox>
-                    <Label text="No of House / Production Line"/>
-                    <Input type="Number" change="onLineCountChange"/>
-                </VBox>
+        <VBox>
+            <Label text="Minor Repair Status"/>
+            <Input class="uniformField"/>
+        </VBox>
 
-            </layout:Grid>
-            <HBox justifyContent="End" class="sapUiSmallMarginTop">
+        <VBox>
+            <Label text="No of House / Production Line"/>
+            <Input type="Number" change="onLineCountChange" class="uniformField"/>
+        </VBox>
+
+    </layout:Grid>
+
+    <HBox justifyContent="End" class="sapUiSmallMarginTop">
         <Button text="Create" type="Emphasized" press="onCreateCampaign"/>
         <Button text="Stop Campaign No" type="Reject" class="sapUiTinyMarginBegin" press="onStopCampaign"/>
     </HBox>
-        </Panel>
+</Panel>
+
 
         <!-- DYNAMIC LINES -->
         <VBox id="linesContainer" width="100%"/>
